@@ -1,10 +1,10 @@
 import { useState } from 'react';
-
-import { nanoid } from '@reduxjs/toolkit';
 import { Label, Input, Form, Field, Button } from "./ContactForm.styled";
 
 import { useDispatch, useSelector } from "react-redux";
-import { addContact } from '../../redux/contactsSlice';
+import { selectContacts } from '../../redux/selectors';
+
+import { addContact } from "../../redux/operations";
 
 const ContactForm = () => {
 
@@ -12,7 +12,7 @@ const ContactForm = () => {
 
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const contacts = useSelector(state => state.contacts.contacts);
+  const contacts = useSelector(selectContacts);
 
   const handleInputChange = (evt) => {
 
@@ -25,16 +25,19 @@ const ContactForm = () => {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
+
     const contactData = {
       name,
       number,
-      id: nanoid(),
     }
+    
     const addedContacts = contacts.find(contact => contact.name === contactData.name);
     if (addedContacts) {
       return alert(`${contactData.name} is already in contacts!`);
     }
-    dispatch(addContact(contactData));
+
+    dispatch(addContact (contactData));
+
     setName('');
     setNumber('');
   }
